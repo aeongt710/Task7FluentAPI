@@ -2,7 +2,7 @@
 
 namespace Task7FluentAPI.Migrations
 {
-    public partial class init : Migration
+    public partial class dbNew : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

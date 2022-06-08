@@ -9,8 +9,8 @@ using Task7FluentAPI.Data;
 namespace Task7FluentAPI.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20220608163853_init")]
-    partial class init
+    [Migration("20220608173559_dbNew")]
+    partial class dbNew
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
