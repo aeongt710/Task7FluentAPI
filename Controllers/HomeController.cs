@@ -23,13 +23,14 @@ namespace Task7FluentAPI.Controllers
             _applicationDbContext = applicationDbContext;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            var a = _applicationDbContext.Orders.AsNoTracking().ToList();
-            var b = _applicationDbContext.Items.ToList();
-            var c = _applicationDbContext.OrderItems.ToList();
-            _applicationDbContext.Units.Remove(new Unit() { Id = 1 });
-            _applicationDbContext.SaveChanges();
+            //var a = await _applicationDbContext.Orders.ToListAsync();
+            //var b = await _applicationDbContext.Items.Include(a=>a.Unit).ToListAsync();
+            //var c = await _applicationDbContext.OrderItems.ToListAsync();
+            //var d = await _applicationDbContext.Units.ToListAsync();
+            ////_applicationDbContext.Units.Remove(new Unit() { Id = 1 });
+            //_applicationDbContext.SaveChanges();
             return View();
         }
 

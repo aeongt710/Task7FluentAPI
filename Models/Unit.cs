@@ -6,6 +6,7 @@ namespace Task7FluentAPI.Models
     public class Unit
     {
         public int Id { get; set; }
+        [Required]
         public string UnitName { get; set; }
         public List<Item> Items { get; set; }
     }

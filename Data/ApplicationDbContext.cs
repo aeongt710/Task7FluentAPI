@@ -21,42 +21,40 @@ namespace Task7FluentAPI.Data
         public DbSet<Unit> Units { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<OrderItem>()
-                .HasKey(a => new { a.OrderId, a.ItemId });
+            modelBuilder.Entity<OrderItem>(x =>
+                {
+                    x.HasKey(a => new { a.OrderId, a.ItemId });
 
-            modelBuilder.Entity<OrderItem>()
-                .HasOne(a => a.Item)
-                .WithMany(b => b.OrderItem)
-                .HasForeignKey(b => b.ItemId)
-                .OnDelete(DeleteBehavior.Cascade);
+                    x.HasOne(a => a.Order)
+                        .WithMany(b => b.OrderItem)
+                        .HasForeignKey(b => b.OrderId)
+                        .OnDelete(DeleteBehavior.Cascade);
 
-            modelBuilder.Entity<OrderItem>()
-                .HasOne(a => a.Order)
-                .WithMany(b => b.OrderItem)
-                .HasForeignKey(b => b.OrderId)
-                .OnDelete(DeleteBehavior.Cascade);
+                    x.HasOne(a => a.Order)
+                        .WithMany(b => b.OrderItem)
+                        .HasForeignKey(b => b.OrderId)
+                        .OnDelete(DeleteBehavior.Cascade);
+                }
+            );
 
-            modelBuilder.Entity<Item>()
-                .HasIndex(a => a.Price)
+            modelBuilder.Entity<Unit>()
+                .HasIndex(a => a.UnitName)
                     .IsUnique();
 
-            modelBuilder.Entity<Unit>()
-                .Property(a => a.UnitName)
-                    .IsRequired();
+            modelBuilder.Entity<Item>(x =>
+                {
+                    x.HasIndex(a => a.Price)
+                        .IsUnique();
 
-            modelBuilder.Entity<Item>()
-                .HasOne(a => a.Unit)
-                .WithMany(b => b.Items)
-                .HasForeignKey(b => b.UnitId)
-                .OnDelete(DeleteBehavior.Cascade);
+                    x.Property(a => a.Name)
+                        .IsRequired();
 
-            modelBuilder.Entity<Unit>()
-                .Property(a => a.UnitName)
-                    .IsRequired();
-
-            modelBuilder.Entity<Item>()
-                .Property(a => a.Name)
-                    .IsRequired();
+                    x.HasOne(a => a.Unit)
+                        .WithMany(b=>b.Items)
+                        .HasForeignKey(c => c.UnitId)
+                        .OnDelete(DeleteBehavior.Cascade);
+                }
+            );
 
             base.OnModelCreating(modelBuilder);
         }

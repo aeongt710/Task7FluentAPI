@@ -12,7 +12,7 @@ namespace Task7FluentAPI.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    OrderName = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    OrderName = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -25,7 +25,7 @@ namespace Task7FluentAPI.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    UnitName = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    UnitName = table.Column<string>(type: "nvarchar(450)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -38,10 +38,10 @@ namespace Task7FluentAPI.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Price = table.Column<int>(type: "int", nullable: false),
                     Quantity = table.Column<int>(type: "int", nullable: false),
-                    UnitId = table.Column<int>(type: "int", nullable: true)
+                    UnitId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -51,7 +51,7 @@ namespace Task7FluentAPI.Migrations
                         column: x => x.UnitId,
                         principalTable: "Units",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -93,6 +93,12 @@ namespace Task7FluentAPI.Migrations
                 name: "IX_OrderItems_ItemId",
                 table: "OrderItems",
                 column: "ItemId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Units_UnitName",
+                table: "Units",
+                column: "UnitName",
+                unique: true);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

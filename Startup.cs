@@ -12,6 +12,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Task7FluentAPI.Data;
+using Task7FluentAPI.Services;
+using Task7FluentAPI.Services.IService;
 
 namespace Task7FluentAPI
 {
@@ -33,6 +35,7 @@ namespace Task7FluentAPI
             services.AddDatabaseDeveloperPageExceptionFilter();
             services.AddRazorPages();
             services.AddControllersWithViews();
+            services.AddTransient<IProjectService, ProjectService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
