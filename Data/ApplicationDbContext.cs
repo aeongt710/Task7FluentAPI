@@ -23,16 +23,15 @@ namespace Task7FluentAPI.Data
         {
             modelBuilder.Entity<OrderItem>(x =>
                 {
-                    x.HasKey(a => new { a.OrderId, a.ItemId });
 
                     x.HasOne(a => a.Order)
                         .WithMany(b => b.OrderItem)
                         .HasForeignKey(b => b.OrderId)
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    x.HasOne(a => a.Order)
+                    x.HasOne(a => a.Item)
                         .WithMany(b => b.OrderItem)
-                        .HasForeignKey(b => b.OrderId)
+                        .HasForeignKey(b => b.ItemId)
                         .OnDelete(DeleteBehavior.Cascade);
                 }
             );

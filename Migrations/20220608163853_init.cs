@@ -58,12 +58,14 @@ namespace Task7FluentAPI.Migrations
                 name: "OrderItems",
                 columns: table => new
                 {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     OrderId = table.Column<int>(type: "int", nullable: false),
                     ItemId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_OrderItems", x => new { x.OrderId, x.ItemId });
+                    table.PrimaryKey("PK_OrderItems", x => x.Id);
                     table.ForeignKey(
                         name: "FK_OrderItems_Items_ItemId",
                         column: x => x.ItemId,
@@ -93,6 +95,11 @@ namespace Task7FluentAPI.Migrations
                 name: "IX_OrderItems_ItemId",
                 table: "OrderItems",
                 column: "ItemId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_OrderItems_OrderId",
+                table: "OrderItems",
+                column: "OrderId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Units_UnitName",
