@@ -23,6 +23,7 @@ namespace Task7FluentAPI.Data
         {
             modelBuilder.Entity<OrderItem>(x =>
                 {
+                    x.HasKey(a => new { a.OrderId, a.ItemId });
 
                     x.HasOne(a => a.Order)
                         .WithMany(b => b.OrderItem)
@@ -40,10 +41,14 @@ namespace Task7FluentAPI.Data
                 .HasIndex(a => a.UnitName)
                     .IsUnique();
 
+            modelBuilder.Entity<Order>()
+                .HasIndex(a => a.OrderName)
+                    .IsUnique();
+
             modelBuilder.Entity<Item>(x =>
                 {
-                    x.HasIndex(a => a.Price)
-                        .IsUnique();
+                    x.Property(a => a.Price)
+                        .IsRequired();
 
                     x.Property(a => a.Name)
                         .IsRequired();

@@ -9,8 +9,8 @@ using Task7FluentAPI.Data;
 namespace Task7FluentAPI.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20220608173559_dbNew")]
-    partial class dbNew
+    [Migration("20220609114801_init")]
+    partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -42,9 +42,6 @@ namespace Task7FluentAPI.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Price")
-                        .IsUnique();
-
                     b.HasIndex("UnitId");
 
                     b.ToTable("Items");
@@ -59,31 +56,30 @@ namespace Task7FluentAPI.Migrations
 
                     b.Property<string>("OrderName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("OrderName")
+                        .IsUnique();
 
                     b.ToTable("Orders");
                 });
 
             modelBuilder.Entity("Task7FluentAPI.Models.OrderItem", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                    b.Property<int>("OrderId")
+                        .HasColumnType("int");
 
                     b.Property<int>("ItemId")
                         .HasColumnType("int");
 
-                    b.Property<int>("OrderId")
+                    b.Property<int>("Price")
                         .HasColumnType("int");
 
-                    b.HasKey("Id");
+                    b.HasKey("OrderId", "ItemId");
 
                     b.HasIndex("ItemId");
-
-                    b.HasIndex("OrderId");
 
                     b.ToTable("OrderItems");
                 });

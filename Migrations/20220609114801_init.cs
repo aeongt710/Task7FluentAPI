@@ -2,7 +2,7 @@
 
 namespace Task7FluentAPI.Migrations
 {
-    public partial class dbNew : Migration
+    public partial class init : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -12,7 +12,7 @@ namespace Task7FluentAPI.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    OrderName = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    OrderName = table.Column<string>(type: "nvarchar(450)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -58,14 +58,13 @@ namespace Task7FluentAPI.Migrations
                 name: "OrderItems",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
                     OrderId = table.Column<int>(type: "int", nullable: false),
-                    ItemId = table.Column<int>(type: "int", nullable: false)
+                    ItemId = table.Column<int>(type: "int", nullable: false),
+                    Price = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_OrderItems", x => x.Id);
+                    table.PrimaryKey("PK_OrderItems", x => new { x.OrderId, x.ItemId });
                     table.ForeignKey(
                         name: "FK_OrderItems_Items_ItemId",
                         column: x => x.ItemId,
@@ -81,12 +80,6 @@ namespace Task7FluentAPI.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Items_Price",
-                table: "Items",
-                column: "Price",
-                unique: true);
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Items_UnitId",
                 table: "Items",
                 column: "UnitId");
@@ -97,9 +90,10 @@ namespace Task7FluentAPI.Migrations
                 column: "ItemId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_OrderItems_OrderId",
-                table: "OrderItems",
-                column: "OrderId");
+                name: "IX_Orders_OrderName",
+                table: "Orders",
+                column: "OrderName",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Units_UnitName",

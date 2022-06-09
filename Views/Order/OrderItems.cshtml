@@ -1,0 +1,133 @@
+﻿@model Task7FluentAPI.Models.VMs.MangeOrderItemsVM
+@{
+    ViewData["Title"] = "OrderItems";
+}
+<div>
+    <h2>Order Details</h2>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            Order Name
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Order.OrderName)
+        </dd>
+        <dt class="col-sm-2">
+            Items Count
+        </dt>
+        <dd class="col-sm-10">
+            @(Model.Order.OrderItem.Select(a=>a.Quanity).Sum())
+        </dd>
+        <dt class="col-sm-2">
+            Total Order Price
+        </dt>
+        <dd class="col-sm-10">
+            @Model.ItemsWithinOrder.Select(a=>a.Quanity*a.Item.Price).Sum()
+        </dd>
+    </dl>
+</div>
+<hr />
+
+<h2>Current Items</h2>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Name
+            </th>
+            <th>
+                Unit Price
+            </th>
+            <th>
+                Item Count
+            </th>
+            <th>
+                Unit
+            </th>
+            <th>Sub Total</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+
+        @foreach (var item in Model.ItemsWithinOrder)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Item.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Item.Price)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Quanity)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Item.Unit.UnitName)
+                </td>
+                <td>
+                    @(item.Quanity*item.Item.Price)
+                </td>
+                <td>
+                    <a asp-action="RemoveItemFromCart" asp-route-orderId="@item.OrderId" asp-route-itemId="@item.ItemId">Remove Single Item From Cart</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+<br />
+<br />
+<hr />
+<h2>Add New Items in Order</h2>
+<br />
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Name
+            </th>
+            <th>
+                Price
+            </th>
+            <th>
+                Quantity
+            </th>
+            <th>
+                Unit
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.AllItems)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Price)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Quantity)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Unit.UnitName)
+                </td>
+
+                @if (item.Quantity > 0)
+                {
+                    <td>
+                        <a asp-action="AddItemToCart" asp-route-orderId="@Model.Order.Id" asp-route-itemId="@item.Id">Add To Cart</a>
+                    </td>
+                }
+                else
+                {
+                    <td  class="font-weight-bold text-danger">Out Of Stock</td>
+                }
+            </tr>
+        }
+    </tbody>
+</table>
+<hr />
+<hr />

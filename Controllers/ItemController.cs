@@ -17,15 +17,90 @@ namespace Task7FluentAPI.Controllers
         }
         public async Task<IActionResult> Index()
         {
-            var list = await _projectService.getItems();
-            return View(list);
+
+            var itemIndexVM = new ItemIndexVM()
+            {
+                Items = await _projectService.getItems(),
+                UnitSelectList = _projectService.getUnits().GetAwaiter().GetResult()
+                .Select(a => new SelectListItem
+                {
+                    Text = a.UnitName,
+                    Value = a.Id.ToString()
+                })
+            };
+
+            return View(itemIndexVM);
         }
+        [HttpPost]
+        [ActionName("Index")]
+        public async Task<IActionResult> SerachByName(ItemIndexVM ItemIndexVM)
+        {
+            if (ItemIndexVM.UnitId == 0 && ItemIndexVM.Name!=null)
+            {
+                var itemIndexVM = new ItemIndexVM()
+                {
+                    Items = await _projectService.getItemsByName(ItemIndexVM.Name),
+                    UnitSelectList = _projectService.getUnits().GetAwaiter().GetResult()
+                        .Select(a => new SelectListItem
+                        {
+                            Text = a.UnitName,
+                            Value = a.Id.ToString()
+                        })
+                };
+                return View(itemIndexVM);
+            }else if(ItemIndexVM.UnitId != 0 && ItemIndexVM.Name==null)
+            {
+                var itemIndexVM = new ItemIndexVM()
+                {
+                    Items = await _projectService.getItemsByUnitId(ItemIndexVM.UnitId),
+                    UnitSelectList = _projectService.getUnits().GetAwaiter().GetResult()
+                        .Select(a => new SelectListItem
+                        {
+                            Text = a.UnitName,
+                            Value = a.Id.ToString()
+                        })
+                };
+                return View(itemIndexVM);
+            }
+            else if (ItemIndexVM.UnitId != 0 && ItemIndexVM.Name != null)
+            {
+                var itemIndexVM = new ItemIndexVM()
+                {
+                    Items = await _projectService.getItemsByUnitIdAndName(ItemIndexVM.UnitId, ItemIndexVM.Name),
+                    UnitSelectList = _projectService.getUnits().GetAwaiter().GetResult()
+                        .Select(a => new SelectListItem
+                        {
+                            Text = a.UnitName,
+                            Value = a.Id.ToString()
+                        })
+                };
+                return View(itemIndexVM);
+            }
+            else if (ItemIndexVM.UnitId == 0 && ItemIndexVM.Name == null)
+            {
+                var itemIndexVM = new ItemIndexVM()
+                {
+                    Items = await _projectService.getItemsByUnitIdAndName(ItemIndexVM.UnitId, string.Empty),
+                    UnitSelectList = _projectService.getUnits().GetAwaiter().GetResult()
+                        .Select(a => new SelectListItem
+                        {
+                            Text = a.UnitName,
+                            Value = a.Id.ToString()
+                        })
+                };
+                return View(itemIndexVM);
+            }
+
+
+            return RedirectToAction(nameof(Index));
+        }
+
         public IActionResult Create()
         {
             var itemVM = new ItemVM()
             {
                 UnitSelectList = _projectService.getUnits().GetAwaiter().GetResult()
-                .Select(a=> new SelectListItem
+                .Select(a => new SelectListItem
                 {
                     Text = a.UnitName,
                     Value = a.Id.ToString()
@@ -36,7 +111,7 @@ namespace Task7FluentAPI.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(ItemVM itemVM)
         {
-            if(ModelState.IsValid)
+            if (ModelState.IsValid)
             {
                 var result = await _projectService.addItem(itemVM.Item);
                 if (result == "")

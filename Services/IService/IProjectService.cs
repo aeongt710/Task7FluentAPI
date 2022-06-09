@@ -15,6 +15,9 @@ namespace Task7FluentAPI.Services.IService
 
 
         public Task<IList<Item>> getItems();
+        public Task<IList<Item>> getItemsByName(string name);
+        public Task<IList<Item>> getItemsByUnitId(int id);
+        public Task<IList<Item>> getItemsByUnitIdAndName(int unitId,string name);
         public Item getItemById(int Id);
         public void deleteITemById(int id);
         public Task<string> addItem(Item item);
@@ -26,5 +29,10 @@ namespace Task7FluentAPI.Services.IService
         public void deleteOrderById(int id);
         public Task<string> addOrder(Order order);
         public Task<string> updateOrder(Order order);
+
+
+        public IList<OrderItem> getOrderItems(int OrderId);
+        public void addItemToCart(int orderId, int itemId);
+        public void removeItemFromCart(int orderId, int itemId);
     }
 }

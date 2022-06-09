@@ -34,7 +34,8 @@ namespace Task7FluentAPI
                     Configuration.GetConnectionString("DefaultConnection")));
             services.AddDatabaseDeveloperPageExceptionFilter();
             services.AddRazorPages();
-            services.AddControllersWithViews();
+            services.AddControllersWithViews()
+                .AddRazorRuntimeCompilation();
             services.AddTransient<IProjectService, ProjectService>();
         }
 

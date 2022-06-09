@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using Task7FluentAPI.Models;
+using Task7FluentAPI.Models.VMs;
 using Task7FluentAPI.Services.IService;
 
 namespace Task7FluentAPI.Controllers
@@ -65,6 +66,25 @@ namespace Task7FluentAPI.Controllers
             }
             return View(order);
         }
-
+        public async Task<IActionResult> OrderItems(int Id)
+        {
+            var vm = new MangeOrderItemsVM()
+                {
+                    Order = _projectService.getOrderById(Id),
+                    AllItems = await _projectService.getItems(),
+                    ItemsWithinOrder = _projectService.getOrderItems(Id)
+                };
+            return View(vm);
+        }
+        public IActionResult AddItemToCart(int orderId,int itemId)
+        {
+            _projectService.addItemToCart(orderId, itemId);
+            return RedirectToAction(nameof(OrderItems), new { Id = orderId });
+        }
+        public IActionResult RemoveItemFromCart(int orderId, int itemId)
+        {
+            _projectService.removeItemFromCart(orderId, itemId);
+            return RedirectToAction(nameof(OrderItems), new { Id = orderId });
+        }
     }
 }
