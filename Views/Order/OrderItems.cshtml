@@ -63,7 +63,13 @@
                     @Html.DisplayFor(modelItem => item.Quanity)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Item.Unit.UnitName)
+                    @{
+                        var x = (item.Item.ItemUnit.Select(a => a.Unit.UnitName));
+                        foreach (var b in x)
+                        {
+                            <div>@b</div>
+                        }
+                    }
                 </td>
                 <td>
                     @(item.Quanity*item.Item.Price)
@@ -112,7 +118,13 @@
                     @Html.DisplayFor(modelItem => item.Quantity)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Unit.UnitName)
+                      @{
+                        var x = (item.ItemUnit.Select(a => a.Unit.UnitName));
+                        foreach (var b in x)
+                        {
+                            <div>@b</div>
+                        }
+                    }
                 </td>
 
                 @if (item.Quantity > 0)

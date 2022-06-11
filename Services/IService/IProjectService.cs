@@ -19,6 +19,8 @@ namespace Task7FluentAPI.Services.IService
         public Task<IList<Item>> getItemsByUnitId(int id);
         public Task<IList<Item>> getItemsByUnitIdAndName(int unitId,string name);
         public Item getItemById(int Id);
+        public bool addItemUnit(int itemId,int unitId);
+        public bool removeItemUnit(int itemId, int unitId);
         public void deleteITemById(int id);
         public Task<string> addItem(Item item);
         public Task<string> updateItem(Item item);

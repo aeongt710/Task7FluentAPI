@@ -19,7 +19,9 @@ namespace Task7FluentAPI.Services
         }
         public async Task<IList<Unit>> getUnits()
         {
-            return await _dbContext.Units.ToListAsync();
+            return await _dbContext.Units
+                .Include(a=>a.ItemUnit)
+                    .ToListAsync();
         }
 
         public async Task<string> addUnit(Unit unit)
@@ -68,7 +70,7 @@ namespace Task7FluentAPI.Services
         public async Task<IList<Item>> getItems()
         {
             return await _dbContext.Items
-                .Include(a => a.Unit)
+                .Include(a => a.ItemUnit) 
                     .OrderBy(a => a.Price)
                         .Reverse().ToListAsync();
         }
@@ -76,31 +78,54 @@ namespace Task7FluentAPI.Services
         public async Task<IList<Item>> getItemsByName(string name)
         {
             return await _dbContext.Items
-                .Include(a => a.Unit)
-                    .Where(b=>(b.Name.ToLower().Contains(name.ToLower()))||(name.ToLower().Contains(b.Name.ToLower())))
-                        .OrderBy(a => a.Price).Reverse().ToListAsync();
+                .Include(a => a.ItemUnit)
+                    .Include(c=>c.ItemUnit)
+                        .ThenInclude(d=>d.Unit)
+                            .Where(b=>(b.Name.ToLower().Contains(name.ToLower()))||(name.ToLower().Contains(b.Name.ToLower())))
+                                .OrderBy(a => a.Price).Reverse().ToListAsync();
         }
-
+        public bool addItemUnit(int itemId, int unitId)
+        {
+            _dbContext.ItemUnits.Add(new ItemUnit() { ItemId = itemId, UnitId = unitId });
+            var result= _dbContext.SaveChanges();
+            if (result > 0)
+                return true;
+            return false;
+        }
+        public bool removeItemUnit(int itemId, int unitId)
+        {
+            _dbContext.ItemUnits.Remove(new ItemUnit() { ItemId = itemId, UnitId = unitId });
+            var result = _dbContext.SaveChanges();
+            if (result > 0)
+                return true;
+            return false;
+        }
         public async Task<IList<Item>> getItemsByUnitId(int id)
         {
-            return await _dbContext.Items
-                .Include(a => a.Unit).Where(a=>a.UnitId==id)
-                    .OrderBy(a=>a.Price).Reverse().ToListAsync();
+            return await _dbContext.ItemUnits.Where(a => a.UnitId == id)
+                .Include(b => b.Item)
+                    .Include(c => c.Unit)
+                        .Select(a => a.Item)
+                            .ToListAsync();
         }
 
         public async Task<IList<Item>> getItemsByUnitIdAndName(int unitId, string name)
         {
-            return await _dbContext.Items
-                .Include(a => a.Unit)
-                    .Where(b => (b.Name.ToLower().Contains(name.ToLower())) || (name.ToLower().Contains(b.Name.ToLower())))
-                        .Where(a => a.UnitId == unitId)
-                            .OrderBy(a => a.Price).Reverse()
+            return await _dbContext.ItemUnits
+                .Include(b => b.Item)
+                    .Include(c => c.Unit)
+                        .Where(a => a.UnitId == unitId && (a.Item.Name.ToLower().Contains(name.ToLower())) || (name.ToLower().Contains(a.Item.Name.ToLower())))
+                            .Select(a => a.Item)
                                 .ToListAsync();
         }
+
+
         public Item getItemById(int Id)
         {
-            var item = _dbContext.Items.Include(a => a.Unit)
-                .FirstOrDefault(a => a.Id == Id);
+            var item = _dbContext.Items
+                .Include(a => a.ItemUnit)
+                    .ThenInclude(b=>b.Unit)
+                        .FirstOrDefault(a => a.Id == Id);
             return item;
         }
         public void deleteITemById(int id)
@@ -145,7 +170,7 @@ namespace Task7FluentAPI.Services
             return await _dbContext.Orders
                 .Include(a => a.OrderItem)
                     .ThenInclude(b => b.Item)
-                        .ThenInclude(c => c.Unit)
+                        .ThenInclude(c => c.ItemUnit)
                             .OrderBy(a=>(a.OrderItem.Select(a=>a.Quanity*a.Item.Price).Sum()))
                                 .Reverse().ToListAsync();
         }
@@ -154,13 +179,22 @@ namespace Task7FluentAPI.Services
         {
             var order = _dbContext.Orders.Include(a => a.OrderItem)
                             .ThenInclude(b => b.Item)
-                                .ThenInclude(c => c.Unit).FirstOrDefault(a => a.Id == Id);
+                                .ThenInclude(c => c.ItemUnit)
+                                    .ThenInclude(a=>a.Unit)
+                                        .FirstOrDefault(a => a.Id == Id);
             return order;
         }
 
         public void deleteOrderById(int id)
         {
-            _dbContext.Orders.Remove(new Order() { Id = id });
+            var order = getOrderById(id);
+            foreach(var x in order.OrderItem)
+            {
+                var item = x.Item;
+                item.Quantity = x.Quanity + item.Quantity;
+                _dbContext.Update(item);
+            }
+            _dbContext.Orders.Remove(order);
             _dbContext.SaveChanges();
         }
 
@@ -218,10 +252,11 @@ namespace Task7FluentAPI.Services
             List<OrderItem> result2 = _dbContext.Orders
                         .Include(a => a.OrderItem)
                             .ThenInclude(b => b.Item)
-                                .ThenInclude(c => c.Unit)
-                                    .Where(d => d.Id == OrderId)
-                                        .Select(a => a.OrderItem)
-                                            .FirstOrDefault();
+                                .ThenInclude(c => c.ItemUnit)
+                                    .ThenInclude(d => d.Unit)
+                                        .Where(d => d.Id == OrderId)
+                                            .Select(a => a.OrderItem)
+                                                .FirstOrDefault();
             return result2;
         }
 

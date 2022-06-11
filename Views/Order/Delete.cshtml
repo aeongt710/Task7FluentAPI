@@ -11,14 +11,61 @@
     <h4>Order</h4>
     <hr />
     <dl class="row">
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.OrderName)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.OrderName)
         </dd>
+        <dt class="col-sm-2">
+           Total Order Price
+        </dt>
+        <dd class="col-sm-10">
+            @(Model.OrderItem.Select(a=>a.Quanity*a.Item.Price).Sum())
+        </dd>
+        <dt class="col-sm-2">
+            Total Order Quantity
+        </dt>
+        <dd class="col-sm-10">
+            @(Model.OrderItem.Select(a=>a.Quanity).Sum())
+        </dd>
     </dl>
-    
+    </dl>
+    <hr/>
+    <h4>The Following Items will Be Reallocated to the stock...</h4>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    Order Name
+                </th>
+                <th>
+                    Sub Total
+                </th>
+                <th>
+                    Quantity
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.OrderItem)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Item.Name)
+                    </td>
+                    <td>
+                        @(Model.OrderItem.Select(a=>a.Quanity*a.Item.Price).Sum())
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Quanity)
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
     <form asp-action="Delete">
         <input type="hidden" asp-for="Id" />
         <input type="submit" value="Delete" class="btn btn-danger" /> |

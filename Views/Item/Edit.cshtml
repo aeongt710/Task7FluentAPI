@@ -1,4 +1,4 @@
-﻿@model Task7FluentAPI.Models.VMs.ItemVM
+﻿@model Task7FluentAPI.Models.Item
 
 @{
     ViewData["Title"] = "Edit";
@@ -12,27 +12,27 @@
     <div class="col-md-4">
         <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="Item.Id" />
+            <input type="hidden" asp-for="Id" />
             <div class="form-group">
-                <label asp-for="Item.Name" class="control-label"></label>
-                <input asp-for="Item.Name" class="form-control" />
-                <span asp-validation-for="Item.Name" class="text-danger"></span>
+                <label asp-for="Name" class="control-label"></label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Item.Price" class="control-label"></label>
-                <input asp-for="Item.Price" class="form-control" />
-                <span asp-validation-for="Item.Price" class="text-danger"></span>
+                <label asp-for="Price" class="control-label"></label>
+                <input asp-for="Price" class="form-control" />
+                <span asp-validation-for="Price" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Item.Quantity" class="control-label"></label>
-                <input asp-for="Item.Quantity" class="form-control" />
-                <span asp-validation-for="Item.Quantity" class="text-danger"></span>
+                <label asp-for="Quantity" class="control-label"></label>
+                <input asp-for="Quantity" class="form-control" />
+                <span asp-validation-for="Quantity" class="text-danger"></span>
             </div>
-            <div class="form-group">
+            @*            <div class="form-group">
                 <label asp-for="Item.UnitId" class="control-label"></label>
                 <select asp-for="Item.UnitId" class="form-control" asp-items="Model.UnitSelectList"></select>
                 <span asp-validation-for="Item.UnitId" class="text-danger"></span>
-            </div>
+                </div>*@
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
             </div>
@@ -40,10 +40,43 @@
     </div>
 </div>
 
+<br />
+
+
+<h4>Current Units</h4>
+<table class="table">
+    <thead>
+        <tr>
+
+            <th>
+                Unit
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model != null)
+            foreach (var item in Model.ItemUnit)
+            {
+                <tr>
+
+                    <td> @Html.DisplayFor(modelItem => item.Unit.UnitName) </td>
+
+                    <td>
+                        <a asp-action="Edit" asp-route-itemid="@Model.Id" asp-route-unitid="@item.UnitId">Remove </a>
+                    </td>
+                </tr>
+            }
+    </tbody>
+</table>
+
+
 <div>
     <a asp-action="Index">Back to List</a>
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+    await Html.RenderPartialAsync("_ValidationScriptsPartial");
+}
 }

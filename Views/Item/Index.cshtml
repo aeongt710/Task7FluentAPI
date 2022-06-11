@@ -10,11 +10,11 @@
 <div class="row justify-content-center mr-5">
 
 
-    <form asp-action="Index" class=" row ">
+    <form asp-action="Index" method="get" class=" row ">
         <label class="control-label  mt-1 col-md-2 pr-3">EnterName</label>
-        <input asp-for="Name" class="form-control col-md-3 mr-3" />
+        <input name="name" class="form-control col-md-3 mr-3" />
         <label class="control-label col-md-2 mt-1 pr-3">SelectUnit</label>
-        <select asp-for="UnitId" class="form-control col-md-2 mr-2" asp-items="Model.UnitSelectList">
+        <select name="unitId" class="form-control col-md-2 mr-2" asp-items="Model.UnitSelectList">
             <option value="0">Select</option>
         </select>
         <input type="submit" value="Search" class="btn-primary col-md-2 btn " />
@@ -43,7 +43,7 @@
         </tr>
     </thead>
     <tbody>
-        @if (Model != null)
+        @if (Model.Items != null)
             foreach (var item in Model.Items)
             {
                 <tr>
@@ -66,7 +66,7 @@
                         </td>
                     }
                     <td>
-                        @Html.DisplayFor(modelItem => item.Unit.UnitName)
+                        <a asp-action="AddUnitsToItem" asp-route-id="@item.Id">Add New Unit ( @item.ItemUnit.ToList().Count() )</a>
                     </td>
                     <td>
                         <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |

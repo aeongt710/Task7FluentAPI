@@ -14,9 +14,7 @@ namespace Task7FluentAPI.Models
         [Required]
         [Range(1, int.MaxValue)]
         public int Quantity { get; set; }
-        [Required]
-        public int UnitId { get; set; }
-        public Unit Unit { get; set; }
         public List<OrderItem> OrderItem { get; set; }
+        public List<ItemUnit> ItemUnit { get; set; }
     }
 }

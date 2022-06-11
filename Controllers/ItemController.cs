@@ -15,81 +15,129 @@ namespace Task7FluentAPI.Controllers
         {
             _projectService = projectService;
         }
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string name, int unitId)
         {
-
-            var itemIndexVM = new ItemIndexVM()
+            if (unitId == 0 && name != null)
             {
-                Items = await _projectService.getItems(),
-                UnitSelectList = _projectService.getUnits().GetAwaiter().GetResult()
+                var itemIndexVM = new ItemIndexVM()
+                {
+                    Items = await _projectService.getItemsByName(name),
+                    UnitSelectList = _projectService.getUnits().GetAwaiter().GetResult()
+                        .Select(a => new SelectListItem
+                        {
+                            Text = a.UnitName,
+                            Value = a.Id.ToString()
+                        })
+                };
+                return View(itemIndexVM);
+            }
+            else if (unitId != 0 && name == null)
+            {
+                var itemIndexVM = new ItemIndexVM()
+                {
+                    Items = await _projectService.getItemsByUnitId(unitId),
+                    UnitSelectList = _projectService.getUnits().GetAwaiter().GetResult()
+                        .Select(a => new SelectListItem
+                        {
+                            Text = a.UnitName,
+                            Value = a.Id.ToString()
+                        })
+                };
+                return View(itemIndexVM);
+            }
+            else if (unitId != 0 && name != null)
+            {
+                var itemIndexVM = new ItemIndexVM()
+                {
+                    Items = await _projectService.getItemsByUnitIdAndName(unitId, name),
+                    UnitSelectList = _projectService.getUnits().GetAwaiter().GetResult()
+                        .Select(a => new SelectListItem
+                        {
+                            Text = a.UnitName,
+                            Value = a.Id.ToString()
+                        })
+                };
+                return View(itemIndexVM);
+            }
+            else
+            //if (ItemIndexVM.UnitId == 0 && ItemIndexVM.Name == null)
+            {
+
+
+                var itemIndexVM = new ItemIndexVM()
+                {
+                    Items = await _projectService.getItems(),
+                    UnitSelectList = _projectService.getUnits().GetAwaiter().GetResult()
                 .Select(a => new SelectListItem
                 {
                     Text = a.UnitName,
                     Value = a.Id.ToString()
                 })
-            };
+                };
 
-            return View(itemIndexVM);
+                return View(itemIndexVM);
+            }
         }
         [HttpPost]
         [ActionName("Index")]
         public async Task<IActionResult> SerachByName(ItemIndexVM ItemIndexVM)
         {
-            if (ItemIndexVM.UnitId == 0 && ItemIndexVM.Name!=null)
-            {
-                var itemIndexVM = new ItemIndexVM()
-                {
-                    Items = await _projectService.getItemsByName(ItemIndexVM.Name),
-                    UnitSelectList = _projectService.getUnits().GetAwaiter().GetResult()
-                        .Select(a => new SelectListItem
-                        {
-                            Text = a.UnitName,
-                            Value = a.Id.ToString()
-                        })
-                };
-                return View(itemIndexVM);
-            }else if(ItemIndexVM.UnitId != 0 && ItemIndexVM.Name==null)
-            {
-                var itemIndexVM = new ItemIndexVM()
-                {
-                    Items = await _projectService.getItemsByUnitId(ItemIndexVM.UnitId),
-                    UnitSelectList = _projectService.getUnits().GetAwaiter().GetResult()
-                        .Select(a => new SelectListItem
-                        {
-                            Text = a.UnitName,
-                            Value = a.Id.ToString()
-                        })
-                };
-                return View(itemIndexVM);
-            }
-            else if (ItemIndexVM.UnitId != 0 && ItemIndexVM.Name != null)
-            {
-                var itemIndexVM = new ItemIndexVM()
-                {
-                    Items = await _projectService.getItemsByUnitIdAndName(ItemIndexVM.UnitId, ItemIndexVM.Name),
-                    UnitSelectList = _projectService.getUnits().GetAwaiter().GetResult()
-                        .Select(a => new SelectListItem
-                        {
-                            Text = a.UnitName,
-                            Value = a.Id.ToString()
-                        })
-                };
-                return View(itemIndexVM);
-            }
-            else if (ItemIndexVM.UnitId == 0 && ItemIndexVM.Name == null)
-            {
-                var itemIndexVM = new ItemIndexVM()
-                {
-                    Items = await _projectService.getItemsByUnitIdAndName(ItemIndexVM.UnitId, string.Empty),
-                    UnitSelectList = _projectService.getUnits().GetAwaiter().GetResult()
-                        .Select(a => new SelectListItem
-                        {
-                            Text = a.UnitName,
-                            Value = a.Id.ToString()
-                        })
-                };
-                return View(itemIndexVM);
-            }
+            //if (ItemIndexVM.UnitId == 0 && ItemIndexVM.Name != null)
+            //{
+            //    var itemIndexVM = new ItemIndexVM()
+            //    {
+            //        Items = await _projectService.getItemsByName(ItemIndexVM.Name),
+            //        UnitSelectList = _projectService.getUnits().GetAwaiter().GetResult()
+            //            .Select(a => new SelectListItem
+            //            {
+            //                Text = a.UnitName,
+            //                Value = a.Id.ToString()
+            //            })
+            //    };
+            //    return View(itemIndexVM);
+            //}
+            //else if (ItemIndexVM.UnitId != 0 && ItemIndexVM.Name == null)
+            //{
+            //    var itemIndexVM = new ItemIndexVM()
+            //    {
+            //        Items = await _projectService.getItemsByUnitId(ItemIndexVM.UnitId),
+            //        UnitSelectList = _projectService.getUnits().GetAwaiter().GetResult()
+            //            .Select(a => new SelectListItem
+            //            {
+            //                Text = a.UnitName,
+            //                Value = a.Id.ToString()
+            //            })
+            //    };
+            //    return View(itemIndexVM);
+            //}
+            //else if (ItemIndexVM.UnitId != 0 && ItemIndexVM.Name != null)
+            //{
+            //    var itemIndexVM = new ItemIndexVM()
+            //    {
+            //        Items = await _projectService.getItemsByUnitIdAndName(ItemIndexVM.UnitId, ItemIndexVM.Name),
+            //        UnitSelectList = _projectService.getUnits().GetAwaiter().GetResult()
+            //            .Select(a => new SelectListItem
+            //            {
+            //                Text = a.UnitName,
+            //                Value = a.Id.ToString()
+            //            })
+            //    };
+            //    return View(itemIndexVM);
+            //}
+            //else if (ItemIndexVM.UnitId == 0 && ItemIndexVM.Name == null)
+            //{
+            //    var itemIndexVM = new ItemIndexVM()
+            //    {
+            //        Items = await _projectService.getItemsByUnitIdAndName(ItemIndexVM.UnitId, string.Empty),
+            //        UnitSelectList = _projectService.getUnits().GetAwaiter().GetResult()
+            //            .Select(a => new SelectListItem
+            //            {
+            //                Text = a.UnitName,
+            //                Value = a.Id.ToString()
+            //            })
+            //    };
+            //    return View(itemIndexVM);
+            //}
 
 
             return RedirectToAction(nameof(Index));
@@ -97,28 +145,20 @@ namespace Task7FluentAPI.Controllers
 
         public IActionResult Create()
         {
-            var itemVM = new ItemVM()
-            {
-                UnitSelectList = _projectService.getUnits().GetAwaiter().GetResult()
-                .Select(a => new SelectListItem
-                {
-                    Text = a.UnitName,
-                    Value = a.Id.ToString()
-                })
-            };
-            return View(itemVM);
+
+            return View();
         }
         [HttpPost]
-        public async Task<IActionResult> Create(ItemVM itemVM)
+        public async Task<IActionResult> Create(Item item)
         {
             if (ModelState.IsValid)
             {
-                var result = await _projectService.addItem(itemVM.Item);
+                var result = await _projectService.addItem(item);
                 if (result == "")
                     return RedirectToAction(nameof(Index));
                 return Ok(result);
             }
-            return View(itemVM);
+            return View(item);
         }
         public IActionResult Delete(int Id)
         {
@@ -139,20 +179,68 @@ namespace Task7FluentAPI.Controllers
             var item = _projectService.getItemById(Id);
             return View(item);
         }
-        public IActionResult Edit(int Id)
+
+        public IActionResult AddUnitsToItem(int Id)
         {
-            var itemVM = new ItemVM()
+            var item = _projectService.getItemById(Id);
+
+            if (item != null)
             {
-                UnitSelectList = _projectService.getUnits().GetAwaiter().GetResult()
-                .Select(a => new SelectListItem
+                ItemUnitVM vm = new ItemUnitVM()
                 {
-                    Text = a.UnitName,
-                    Value = a.Id.ToString()
-                }),
-                Item = _projectService.getItemById(Id)
-            };
-            return View(itemVM);
+                    ItemId = Id,
+
+                    UnitSelectList = _projectService.getUnits()
+                        .GetAwaiter()
+                            .GetResult()
+                                .Where(a => !a.ItemUnit.Select(a => a.ItemId)
+                                    .Contains(Id))
+                        .Select(a => new SelectListItem
+                        {
+                            Text = a.UnitName,
+                            Value = a.Id.ToString()
+                        })
+                };
+                return View(vm);
+            }
+            return NotFound("Item Not Found!");
         }
+        [HttpPost]
+        [ActionName("AddUnitsToItem")]
+        public IActionResult AddUnitsToItem(ItemUnitVM vm)
+        {
+            if (_projectService.addItemUnit(vm.ItemId, vm.UnitId))
+            {
+                return RedirectToAction(nameof(Index));
+            }
+            vm = new ItemUnitVM()
+            {
+                ItemId = vm.ItemId,
+                UnitSelectList = _projectService.getUnits().GetAwaiter().GetResult()
+                        .Select(a => new SelectListItem
+                        {
+                            Text = a.UnitName,
+                            Value = a.Id.ToString()
+                        })
+            };
+            return View(vm);
+        }
+
+
+
+
+
+
+        public IActionResult Edit(int Id, int unitId)
+        {
+            if (unitId > 0)
+            {
+                _projectService.removeItemUnit(Id, unitId);
+            }
+            var item = _projectService.getItemById(Id);
+            return View(item);
+        }
+
         [HttpPost]
         public async Task<IActionResult> Edit(ItemVM itemVm)
         {

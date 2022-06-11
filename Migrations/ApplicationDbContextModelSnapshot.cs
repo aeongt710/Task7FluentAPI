@@ -35,14 +35,24 @@ namespace Task7FluentAPI.Migrations
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
 
+                    b.HasKey("Id");
+
+                    b.ToTable("Items");
+                });
+
+            modelBuilder.Entity("Task7FluentAPI.Models.ItemUnit", b =>
+                {
                     b.Property<int>("UnitId")
                         .HasColumnType("int");
 
-                    b.HasKey("Id");
+                    b.Property<int>("ItemId")
+                        .HasColumnType("int");
 
-                    b.HasIndex("UnitId");
+                    b.HasKey("UnitId", "ItemId");
 
-                    b.ToTable("Items");
+                    b.HasIndex("ItemId");
+
+                    b.ToTable("ItemUnits");
                 });
 
             modelBuilder.Entity("Task7FluentAPI.Models.Order", b =>
@@ -101,13 +111,21 @@ namespace Task7FluentAPI.Migrations
                     b.ToTable("Units");
                 });
 
-            modelBuilder.Entity("Task7FluentAPI.Models.Item", b =>
+            modelBuilder.Entity("Task7FluentAPI.Models.ItemUnit", b =>
                 {
+                    b.HasOne("Task7FluentAPI.Models.Item", "Item")
+                        .WithMany("ItemUnit")
+                        .HasForeignKey("ItemId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("Task7FluentAPI.Models.Unit", "Unit")
-                        .WithMany("Items")
+                        .WithMany("ItemUnit")
                         .HasForeignKey("UnitId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Item");
 
                     b.Navigation("Unit");
                 });
@@ -133,6 +151,8 @@ namespace Task7FluentAPI.Migrations
 
             modelBuilder.Entity("Task7FluentAPI.Models.Item", b =>
                 {
+                    b.Navigation("ItemUnit");
+
                     b.Navigation("OrderItem");
                 });
 
@@ -143,7 +163,7 @@ namespace Task7FluentAPI.Migrations
 
             modelBuilder.Entity("Task7FluentAPI.Models.Unit", b =>
                 {
-                    b.Navigation("Items");
+                    b.Navigation("ItemUnit");
                 });
 #pragma warning restore 612, 618
         }

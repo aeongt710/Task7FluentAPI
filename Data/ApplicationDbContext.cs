@@ -19,6 +19,7 @@ namespace Task7FluentAPI.Data
         public DbSet<Order> Orders { get; set; }
         public DbSet<OrderItem> OrderItems { get; set; }
         public DbSet<Unit> Units { get; set; }
+        public DbSet<ItemUnit> ItemUnits { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<OrderItem>(x =>
@@ -32,6 +33,22 @@ namespace Task7FluentAPI.Data
 
                     x.HasOne(a => a.Item)
                         .WithMany(b => b.OrderItem)
+                        .HasForeignKey(b => b.ItemId)
+                        .OnDelete(DeleteBehavior.Cascade);
+                }
+            );
+
+            modelBuilder.Entity<ItemUnit>(x =>
+                {
+                    x.HasKey(a => new { a.UnitId, a.ItemId });
+
+                    x.HasOne(a => a.Unit)
+                        .WithMany(b => b.ItemUnit)
+                        .HasForeignKey(b => b.UnitId)
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    x.HasOne(a => a.Item)
+                        .WithMany(b => b.ItemUnit)
                         .HasForeignKey(b => b.ItemId)
                         .OnDelete(DeleteBehavior.Cascade);
                 }
@@ -53,13 +70,12 @@ namespace Task7FluentAPI.Data
                     x.Property(a => a.Name)
                         .IsRequired();
 
-                    x.HasOne(a => a.Unit)
-                        .WithMany(b=>b.Items)
-                        .HasForeignKey(c => c.UnitId)
-                        .OnDelete(DeleteBehavior.Cascade);
+                    //x.HasOne(a => a.Unit)
+                    //    .WithMany(b=>b.Items)
+                    //    .HasForeignKey(c => c.UnitId)
+                    //    .OnDelete(DeleteBehavior.Cascade);
                 }
             );
-
             base.OnModelCreating(modelBuilder);
         }
     }

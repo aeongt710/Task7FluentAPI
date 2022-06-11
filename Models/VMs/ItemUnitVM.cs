@@ -5,13 +5,12 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Task7FluentAPI.Models.VMs
 {
-    public class ItemIndexVM
+    public class ItemUnitVM
     {
-        public IList<Item> Items { get; set; }
+        public int ItemId { get; set; }
         [ValidateNever]
         public IEnumerable<SelectListItem> UnitSelectList { get; set; }
-        //[Display(Name ="Filter By")]
-        //public int UnitId { get; set; }
-        //public string Name { get; set; }
+        [Required]
+        public int UnitId { get; set; }
     }
 }
