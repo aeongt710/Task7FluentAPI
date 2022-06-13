@@ -71,8 +71,9 @@ namespace Task7FluentAPI.Services
         {
             return await _dbContext.Items
                 .Include(a => a.ItemUnit) 
-                    .OrderBy(a => a.Price)
-                        .Reverse().ToListAsync();
+                    .ThenInclude(b=>b.Unit)
+                        .OrderBy(a => a.Price)
+                            .Reverse().ToListAsync();
         }
 
         public async Task<IList<Item>> getItemsByName(string name)
